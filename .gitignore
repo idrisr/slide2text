@@ -1,0 +1,5 @@
+.direnv
+screenshots/
+dist-newstyle/
+.envrc
+*txt
