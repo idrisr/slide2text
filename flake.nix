@@ -5,7 +5,7 @@
     let
       system = flake-utils.lib.system.x86_64-linux;
       compiler = "ghc948";
-      pkgs = import nixpkgs { system = system; };
+      pkgs = import nixpkgs { inherit system; };
       hPkgs = pkgs.haskell.packages."${compiler}";
       myDevTools = with hPkgs; [
         cabal-install
@@ -17,15 +17,17 @@
         hoogle
         implicit-hie
         retrie
+        cabal-fmt
       ];
 
-      slide2text = with pkgs; haskell.packages.${compiler}.callPackage ./. { };
+      slide2text = with pkgs;
+        haskell.packages.${compiler}.callCabal2nix "" ./slide2text { };
 
       wrapped = pkgs.writeShellApplication {
         name = "slide2text";
         runtimeInputs = [ slide2text pkgs.tesseract ];
         text = ''
-          exec imgocr "$@"
+          exec slide2text "$@"
         '';
       };
     in {
@@ -34,9 +36,16 @@
         LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath myDevTools;
       };
 
+      overlays = {
+        slide2text = final: prev: {
+          slide2text = with prev;
+            haskell.packages.${compiler}.callCabal2nix "" ./slide2text { };
+        };
+      };
+
       apps.${system}.default = {
         type = "app";
-        program = "${slide2text}/bin/imgocr";
+        program = "${slide2text}/bin/slide2text";
       };
       packages.${system}.default = wrapped;
     };

@@ -1,0 +1,36 @@
+cabal-version: 3.0
+name:          slide2textlib
+version:       0.1.0.0
+build-type:    Simple
+
+common warnings
+  ghc-options:      -Wall -threaded
+  default-language: Haskell2010
+
+library
+  import:          warnings
+  hs-source-dirs:  src
+  exposed-modules:
+    CLIParser
+    Files
+
+  build-depends:
+    , base                  ^>=4.17.2.1
+    , bytestring
+    , directory
+    , filepath
+    , optparse-applicative
+    , raw-strings-qq
+    , typed-process
+
+executable slide2text
+  import:         warnings
+  hs-source-dirs: app
+  main-is:        Main.hs
+  build-depends:
+    , base                   ^>=4.17.2.1
+    , bytestring
+    , directory
+    , slide2textlib
+    , terminal-progress-bar
+    , text
