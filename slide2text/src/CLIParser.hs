@@ -19,4 +19,4 @@ cmdLineParser = execParser opts
 mkParams :: Parser Params
 mkParams =
     Params
-        <$> some (strArgument (metavar "<DIR>" <> help "input images to OCR"))
+        <$> some (strArgument (metavar "<FILES>" <> help "input images to OCR"))
